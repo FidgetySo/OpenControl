@@ -1,0 +1,44 @@
+Login:
+  Username: ""
+  Password: ""
+Connection:
+  Host: "ip"
+  GamePort: 8084
+  RelayPort: 4000
+  AutoConnect: true
+  ConnectionCheckInterval: 120
+  RetriesBeforeTimeout: 3
+Database:
+  DB: "db.db"
+  Requests: "requests"
+  Storage: "storage"
+  Crafting: "crafting"
+  Power: "power"
+GUI:
+  AutoStart: true
+  StartWidth: 800
+  StartHeight: 600
+Crafting: 
+  CalculateProcessingRequirements: true
+  StorePastCraftingRequests: true
+  Queue:
+    PushingStopsCurrentRequest: true
+    AllowOverloadingRequests: true
+Storage:
+  UpdateIntervalInMinutes: 15
+Power:
+  InputUpdateFrequnecy: 1000
+  TotalUpdateFrequency: 1000
+  EmergencyLevel: 1_000_000
+  ConvertFuelsToEU: true
+Emergency:
+  EmergencyAlerts: true
+  DiscordContacts:
+    - ". discord username"
+  DiscordToken: ""
+  DiscordUseEmbeddedMessages: true
+Robots:
+  Enabled: false
+Debug:
+  VerboseLevel: 3
+  OfflineMode: false

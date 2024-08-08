@@ -1,0 +1,15 @@
+Verbose Levels
+    0: Send only essential messages to console (critical errors and initialzing messages)
+    1: Send Warnings, essential messages, and critical errors
+    2: Send Everything (for debugging)
+
+GUI Modes:
+    0: Server Mode used when running the GUI from the same machine that hosts the relay server
+    1: Client Mode used when connecting remotely to the relay server
+
+
+Debug Modes:
+    Debug mode needs to be on for these to work
+    OffilineMode: used to test GUI by not sending or recieving any packets
+    NoGUI: used to test packets by disabiling the GUI.
+    

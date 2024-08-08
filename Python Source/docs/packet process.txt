@@ -1,0 +1,13 @@
+1. Client Encodes Packet String
+2. Client Sends packet string to relay server
+3. Relay Server recieves packet from client and forwards it to 
+4. 
+
+
+
+2. Send Packet String to relay server
+	a. Relay server recieves packet from client and transmits to in-game computer
+	b. Relay Server recieves reponse from in-game computer
+	c. Relay server sends response packet to currently connected clients
+3. Recieve Response Packet
+4. 

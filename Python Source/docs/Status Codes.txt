@@ -1,0 +1,4 @@
+HTML Used Status Codes
+    200: Success
+    400: Bad Request
+        JSON Format Error
