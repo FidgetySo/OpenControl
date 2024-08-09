@@ -12,19 +12,22 @@ class RelayServer:
 
 	def start(self)
 		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-		s.bind((self.host, self.relay_port))
-		s.listen()
-		conn, addr = s.accept()
-		with conn:
-			print(f"Connected by {addr}")
-			while True:
-				data = conn.recv(1024)
-			if not data:
-                break
-            decoded_data = decode_packet(data)
-            handled = handle_data(decoded_data)
+			s.bind((self.host, self.relay_port))
+			s.listen()
+			conn, addr = s.accept()
+			with conn:
+				print(f"Connected by {addr}")
+				while True:
+					data = conn.recv(1024)
+	            	decoded_data = decode_packet(data)
+	            	handled, reponse = handle_data(decoded_data)
+
+	            	conn.sendall()
 
     def decode_packet(self, packet):
+    	pass
+
+    def encode_packet(self, data):
     	pass
 
     def handle_data(self, data):
