@@ -1,1 +1,8 @@
-PySide6
+numpy==2.0.1
+pyqtgraph==0.13.7
+PySide6==6.7.2
+PySide6_Addons==6.7.2
+PySide6_Essentials==6.7.2
+ruamel.yaml==0.18.6
+ruamel.yaml.clib==0.2.8
+shiboken6==6.7.2

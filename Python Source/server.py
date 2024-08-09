@@ -9,4 +9,4 @@ if __name__ == "__main__":
 	config = Config()
 	database = DB(config)
 
-	RelayServer()
+	RelayServer(config, database)

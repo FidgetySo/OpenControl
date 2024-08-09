@@ -2,17 +2,18 @@ Login:
   Username: ""
   Password: ""
 Connection:
-  Host: "ip"
+  Host: "127.0.0.1"
   GamePort: 8084
   RelayPort: 4000
   AutoConnect: true
   ConnectionCheckInterval: 120
-  RetriesBeforeTimeout: 3
+  TimeoutLength: 2
 Database:
   DB: "db.db"
   Requests: "requests"
   Storage: "storage"
   Crafting: "crafting"
+  Craftables: "craftables"
   Power: "power"
 GUI:
   AutoStart: true

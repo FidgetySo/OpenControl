@@ -23,6 +23,8 @@ class DB:
 			table = self.config['Storage']
 		elif table == TABLES.CRAFTING:
 			table = self.config['Crafing']
+		elif table == TABLES.CRAFTABLES:
+			table = self.config['Craftables']
 		elif table == TABLES.POWER:
 			table = self.config['Power']
 		else:
@@ -35,7 +37,7 @@ class DB:
 		
 		return table_query
 
-	def add_crafting_request(self, item, amount, ):
+	def add_crafting_request(self, item, amount, datetime):
 		pass
 	def update_crafting_request(
 		self,
@@ -47,3 +49,13 @@ class DB:
 	):
 		update_str = ''
 		self.cursor.execute(update_str)
+
+	def get_craftables(self):
+		craftables_query = self.get_table_data(TABLES.CRAFTABLES)
+		
+		craftables = []
+		for item in craftables_query:
+			craftables.append(item[0])
+		print(craftables)
+		return craftables
+

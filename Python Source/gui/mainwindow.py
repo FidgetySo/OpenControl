@@ -25,12 +25,13 @@ from random import randint
 import enums
 
 class MainWindow(QMainWindow):
-    def __init__(self, config, database, parent=None, logic=True):
+    def __init__(self, config, database, relay, parent=None, logic=True):
         super().__init__(parent)
         self.write_config = config.write
         self.config = config.yaml_data
         self.db = database
         self.logic = logic
+        self.relay = relay
 
         self.ui = Ui_OpenControl()
         self.ui.setupUi(self)
@@ -105,9 +106,21 @@ class MainWindow(QMainWindow):
         self.crafting = QDialog()
         self.crafting.ui = Ui_Crafting()
         self.crafting.ui.setupUi(self.crafting)
-        self.crafting.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setup_craftables()
+        self.crafting.ui.ok_cancel.accepted.connect(self.sumbit_crafting_request)
         self.crafting.exec_()
-        #self.crafting.ui.
+        
+
+    def setup_craftables(self):
+        craftables = self.db.get_craftables()
+        self.crafting.ui.item.addItems(craftables)
+
+    def sumbit_crafting_request(self):
+        item = self.crafting.ui.item.currentText()
+        amount = self.crafting.ui.amount.value()
+        push = self.crafting.ui.push.isChecked()
+
+        self.relay.new_crafting_request(item, amount, push)
 
     def setup_storage_widget(self):
         self.storage_widget = QWidget()
