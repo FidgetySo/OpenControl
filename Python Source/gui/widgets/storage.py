@@ -23,7 +23,7 @@ class Ui_Storage(object):
     def setupUi(self, Storage):
         if not Storage.objectName():
             Storage.setObjectName(u"Storage")
-        Storage.resize(552, 687)
+        Storage.resize(631, 687)
         icon = QIcon()
         icon.addFile(u"//media/Eli/Projects/OpenControl/Python Source/gui/OpenComputers.ico", QSize(), QIcon.Normal, QIcon.Off)
         Storage.setWindowIcon(icon)
@@ -37,8 +37,8 @@ class Ui_Storage(object):
         self.gridLayout_5 = QGridLayout(self.queueGroup)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.queueTable = QTableWidget(self.queueGroup)
-        if (self.queueTable.columnCount() < 5):
-            self.queueTable.setColumnCount(5)
+        if (self.queueTable.columnCount() < 6):
+            self.queueTable.setColumnCount(6)
         __qtablewidgetitem = QTableWidgetItem()
         __qtablewidgetitem.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
         self.queueTable.setHorizontalHeaderItem(0, __qtablewidgetitem)
@@ -54,6 +54,9 @@ class Ui_Storage(object):
         __qtablewidgetitem4 = QTableWidgetItem()
         __qtablewidgetitem4.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
         self.queueTable.setHorizontalHeaderItem(4, __qtablewidgetitem4)
+        __qtablewidgetitem5 = QTableWidgetItem()
+        __qtablewidgetitem5.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.queueTable.setHorizontalHeaderItem(5, __qtablewidgetitem5)
         self.queueTable.setObjectName(u"queueTable")
 
         self.gridLayout_5.addWidget(self.queueTable, 0, 0, 1, 1)
@@ -74,16 +77,16 @@ class Ui_Storage(object):
         self.storageTable = QTableWidget(self.storageGroup)
         if (self.storageTable.columnCount() < 3):
             self.storageTable.setColumnCount(3)
-        __qtablewidgetitem5 = QTableWidgetItem()
-        __qtablewidgetitem5.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.storageTable.setHorizontalHeaderItem(0, __qtablewidgetitem5)
         __qtablewidgetitem6 = QTableWidgetItem()
         __qtablewidgetitem6.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.storageTable.setHorizontalHeaderItem(1, __qtablewidgetitem6)
+        self.storageTable.setHorizontalHeaderItem(0, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
-        __qtablewidgetitem7.setText(u"Data");
         __qtablewidgetitem7.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        self.storageTable.setHorizontalHeaderItem(2, __qtablewidgetitem7)
+        self.storageTable.setHorizontalHeaderItem(1, __qtablewidgetitem7)
+        __qtablewidgetitem8 = QTableWidgetItem()
+        __qtablewidgetitem8.setText(u"Data");
+        __qtablewidgetitem8.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
+        self.storageTable.setHorizontalHeaderItem(2, __qtablewidgetitem8)
         self.storageTable.setObjectName(u"storageTable")
         self.storageTable.setSortingEnabled(True)
         self.storageTable.setColumnCount(3)
@@ -112,11 +115,13 @@ class Ui_Storage(object):
         ___qtablewidgetitem3.setText(QCoreApplication.translate("Storage", u"Bytes", None));
         ___qtablewidgetitem4 = self.queueTable.horizontalHeaderItem(4)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("Storage", u"Processors", None));
+        ___qtablewidgetitem5 = self.queueTable.horizontalHeaderItem(5)
+        ___qtablewidgetitem5.setText(QCoreApplication.translate("Storage", u"Date Time", None));
         self.showPastRequests.setText(QCoreApplication.translate("Storage", u"Show Past Crafting Requests", None))
         self.storageGroup.setTitle(QCoreApplication.translate("Storage", u"Storage", None))
-        ___qtablewidgetitem5 = self.storageTable.horizontalHeaderItem(0)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate("Storage", u"Item", None));
-        ___qtablewidgetitem6 = self.storageTable.horizontalHeaderItem(1)
-        ___qtablewidgetitem6.setText(QCoreApplication.translate("Storage", u"Amount", None));
+        ___qtablewidgetitem6 = self.storageTable.horizontalHeaderItem(0)
+        ___qtablewidgetitem6.setText(QCoreApplication.translate("Storage", u"Item", None));
+        ___qtablewidgetitem7 = self.storageTable.horizontalHeaderItem(1)
+        ___qtablewidgetitem7.setText(QCoreApplication.translate("Storage", u"Amount", None));
     # retranslateUi
 

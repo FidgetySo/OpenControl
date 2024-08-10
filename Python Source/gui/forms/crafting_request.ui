@@ -18,16 +18,6 @@
     <normaloff>//media/Eli/Projects/OpenControl/Python Source/gui/OpenComputers.ico</normaloff>//media/Eli/Projects/OpenControl/Python Source/gui/OpenComputers.ico</iconset>
   </property>
   <layout class="QFormLayout" name="formLayout">
-   <item row="2" column="0">
-    <widget class="QSpinBox" name="amount">
-     <property name="minimumSize">
-      <size>
-       <width>50</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QComboBox" name="item">
      <property name="minimumSize">
@@ -42,6 +32,22 @@
     <widget class="QLabel" name="item_label">
      <property name="text">
       <string>Item</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QSpinBox" name="amount">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="singleStep">
+      <number>64</number>
      </property>
     </widget>
    </item>

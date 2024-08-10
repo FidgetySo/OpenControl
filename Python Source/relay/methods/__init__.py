@@ -1,0 +1,1 @@
+from relay.methods.crafting import Crafter

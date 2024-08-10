@@ -2,7 +2,7 @@ Login:
   Username: ""
   Password: ""
 Connection:
-  Host: "127.0.0.1"
+  Host: "localhost"
   GamePort: 8084
   RelayPort: 4000
   AutoConnect: true

@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 
 from enums import TABLES
@@ -22,7 +23,7 @@ class DB:
 		elif table == TABLES.STORAGE:
 			table = self.config['Storage']
 		elif table == TABLES.CRAFTING:
-			table = self.config['Crafing']
+			table = self.config['Crafting']
 		elif table == TABLES.CRAFTABLES:
 			table = self.config['Craftables']
 		elif table == TABLES.POWER:
@@ -37,11 +38,26 @@ class DB:
 		
 		return table_query
 
-	def add_crafting_request(self, item, amount, datetime):
-		pass
+	def add_crafting_request(
+		self,
+		item,
+		amount,
+		n_bytes,
+		n_procs
+	):
+		amount = str(amount)
+		n_bytes = str(n_bytes)
+		n_procs = str(n_procs)
+		now = datetime.now()
+		date_time = now.strftime("%m/%d/%Y.%H:%M:%S")
+		add_str = "INSERT INTO CRAFTING VALUES('"+item+"', '"+amount+"', '"+amount+"', '"+n_bytes+"', '"+n_procs+"', '"+date_time+"')"
+		print(add_str)
+		self.cursor.execute(add_str)
+		self.db_connection.commit()
+
 	def update_crafting_request(
 		self,
-		id,
+		item,
 		remaining,
 		n_bytes,
 		n_procs,
@@ -57,4 +73,7 @@ class DB:
 		for item in craftables_query:
 			craftables.append(item[0])
 		return craftables
+
+	#def update_craftables(self, ):
+		#pass
 

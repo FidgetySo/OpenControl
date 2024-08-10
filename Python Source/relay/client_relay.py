@@ -23,4 +23,5 @@ class ClientRelay:
 		async with websockets.connect(self.host, ping_timeout=self.timeout) as websocket:
 			await websocket.send(str(data))
 			response = await websocket.recv()
+			print(response)
 			return response

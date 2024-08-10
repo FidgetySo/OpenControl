@@ -29,12 +29,6 @@ class Ui_Crafting(object):
         Crafting.setWindowIcon(icon)
         self.formLayout = QFormLayout(Crafting)
         self.formLayout.setObjectName(u"formLayout")
-        self.amount = QSpinBox(Crafting)
-        self.amount.setObjectName(u"amount")
-        self.amount.setMinimumSize(QSize(50, 0))
-
-        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.amount)
-
         self.item = QComboBox(Crafting)
         self.item.setObjectName(u"item")
         self.item.setMinimumSize(QSize(200, 0))
@@ -45,6 +39,14 @@ class Ui_Crafting(object):
         self.item_label.setObjectName(u"item_label")
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.item_label)
+
+        self.amount = QSpinBox(Crafting)
+        self.amount.setObjectName(u"amount")
+        self.amount.setMinimumSize(QSize(200, 0))
+        self.amount.setMaximum(10000)
+        self.amount.setSingleStep(64)
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.amount)
 
         self.amount_label = QLabel(Crafting)
         self.amount_label.setObjectName(u"amount_label")
@@ -61,6 +63,7 @@ class Ui_Crafting(object):
         self.ok_cancel.setObjectName(u"ok_cancel")
         self.ok_cancel.setOrientation(Qt.Horizontal)
         self.ok_cancel.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.ok_cancel.setCenterButtons(False)
 
         self.formLayout.setWidget(3, QFormLayout.FieldRole, self.ok_cancel)
 

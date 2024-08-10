@@ -119,23 +119,26 @@ class MainWindow(QMainWindow):
     def sumbit_crafting_request(self):
         asyncio.run(
             self.relay.send(dict(
-                method='new_crafting',
+                method='c_new_crafting',
                 item=self.crafting.ui.item.currentText(),
                 amount=self.crafting.ui.amount.value(),
                 push=self.crafting.ui.push.isChecked()
                 )
             )
         )
-    
+
     def setup_storage_widget(self):
         self.storage_widget = QWidget()
         self.storage = Ui_Storage()
         self.storage.setupUi(self.storage_widget)
         self.storage_widget.show()
 
+        #Disable Editing of Table from GUI
         self.storage.storageTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.storage.queueTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.update_storage_widget()
+        self.update_crafting_widget()
 
         self.storage_timer = QtCore.QTimer()
 
@@ -146,22 +149,33 @@ class MainWindow(QMainWindow):
         self.storage_timer.timeout.connect(self.update_storage_widget)
         self.storage_timer.start()
 
+
+        self.crafting_timer = QtCore.QTimer()
+        self.crafting_timer.setInterval(60000) # refresh crafting queue every 1 minute
+        
+        self.crafting_timer.timeout.connect(self.update_crafting_widget)
+        self.crafting_timer.start()
+
     def update_storage_widget(self):
         storage_query = self.db.get_table_data(enums.TABLES.STORAGE)
 
         storageIndex = 0
         for i in storage_query:
             self.storage.storageTable.setRowCount(storageIndex + 1)
+
+            # Item
             self.storage.storageTable.setItem(
                 storageIndex,
                 0,
                 QTableWidgetItem(i[0])
             )
+            # Amount
             self.storage.storageTable.setItem(
                 storageIndex,
                 1,
-                QTableWidgetItem(i[1])
+                QTableWidgetItem(str(i[1]))
             )
+            # Data
             self.storage.storageTable.setItem(
                 storageIndex,
                 2,
@@ -169,3 +183,49 @@ class MainWindow(QMainWindow):
             )
             storageIndex += 1
         print('Updated Storage Table')
+
+    def update_crafting_widget(self):
+        crafting_query = self.db.get_table_data(enums.TABLES.CRAFTING)
+
+        craftingIndex = 0
+        for i in crafting_query:
+            self.storage.queueTable.setRowCount(craftingIndex + 1)
+
+            # Item
+            self.storage.queueTable.setItem(
+                craftingIndex,
+                0,
+                QTableWidgetItem(i[0])
+            )
+            # Requested Amount
+            self.storage.queueTable.setItem(
+                craftingIndex,
+                1,
+                QTableWidgetItem(str(i[1]))
+            )
+            # Remaining Amount
+            self.storage.queueTable.setItem(
+                craftingIndex,
+                2,
+                QTableWidgetItem(str(i[2]))
+            )
+            # Number of Bytes
+            self.storage.queueTable.setItem(
+                craftingIndex,
+                3,
+                QTableWidgetItem(str(i[3]))
+            )
+            # Number of Processors
+            self.storage.queueTable.setItem(
+                craftingIndex,
+                4,
+                QTableWidgetItem(str(i[4]))
+            )
+            # Date time
+            self.storage.queueTable.setItem(
+                craftingIndex,
+                5,
+                QTableWidgetItem(i[5])
+            )
+            craftingIndex += 1
+        print('Updated Crafting Queue')

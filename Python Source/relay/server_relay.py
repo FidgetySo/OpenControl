@@ -2,17 +2,18 @@
 import asyncio
 from websockets.server import serve
 
-import enums
+import ast
 
-import logging
-logger = logging.getLogger('websockets')
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.StreamHandler())
+import enums
+from relay.methods import Crafter
+
 
 class RelayServer:
 	def __init__(self, config, database):
 		self.config = config.yaml_data
 		self.db = database
+
+		self.crafter = Crafter(self.config, self.db) 
 
 		self.host = self.config['Connection']['Host']
 		self.port = self.config['Connection']['RelayPort']
@@ -22,14 +23,32 @@ class RelayServer:
 		asyncio.run(self.run())
 
 	def create_response(self, recieved):
-		return "A Response"
+		try:
+			recieved = ast.literal_eval(recieved)
+		except Exception as e:
+			print("Improper format for dict conversion: ", recieved)
+			print(e)
+			return 'Uh Oh'
+
+		# Client New/Update Crafting Request
+		if recieved['method'] == 'c_new_crafting':
+			response = self.crafter.c_new_crafting(recieved)
+		elif recieved['method'] == 'c_update_crafting':
+			response = self.crafter.c_update_crafting(recieved)
+
+		# Game New/Update Crafting Request
+		elif recieved['method'] == 'g_new_crafting':
+			reponse = self.crafter.g_new_crafting(recieved)
+		elif recieved['method'] == 'g_update_crafting':
+			response = self.crafer.g_update_crafting(recieved)
+
+		else:
+			response = dict(method="status", code=400, message="Unknown Method")
+		return str(response)
 
 	async def handler(self, websocket):
 		recieved = await websocket.recv()
-		print(type(recieved))
-
 		response = self.create_response(recieved)
-
 		await websocket.send(response)
 	
 	async def run(self):
