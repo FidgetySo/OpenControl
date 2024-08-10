@@ -1,9 +1,13 @@
+"""
 import socket
 import selectors
+import traceback
+"""
 
+from websockets.sync.server import serve
 
 import enums
-from relay.lib_server import Message
+#from relay.lib_server import Message
 
 class RelayServer:
 	def __init__(self, config, database):
@@ -15,41 +19,16 @@ class RelayServer:
 
 		self.timeout = self.config['Connection']['TimeoutLength']
 
-		self.sel = selectors.DefaultSelector()
+		self.run()
 
-		self.start()
-	
-	def accept_wrapper(self, sock):
-		conn, addr = sock.accept()
-		print(f"Accepted connection from {addr}")
-		conn.setblocking(False)
-		message = Message(self.sel, conn, addr)
-		self.sel.register(conn, selectors.EVENT_READ, data=message)
+	def handler(websocket):
+		recieved = await websocket.recv()
+		print(recieved)
 
-	def start(self):
-		self.lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.lsock.bind((self.host, self.port))
-		self.lsock.listen()
-		print(f"Listening on {(self.host, self.port)}")
-		self.lsock.setblocking(False)
-		self.sel.register(self.lsock, selectors.EVENT_READ, data=None)
+		response = self.create_reponse(recieved)
 
-		while True:
-			try:
-				events = self.sel.select(timeout=None)
-				for key, mask in events:
-					if key.data is None:
-						self.accept_wrapper(key.fileobj)
-					else:
-						message = key.data
-						try:
-							message.process_events(mask)
-						except Exception:
-							print(
-								f"Main: Error: Exception for {message.addr}:\n"
-								f"{traceback.format_exc()}"
-							)
-						message.close()
-			except KeyboardInterrupt:
-				self.sel.close()
+		await websocket.send(response)
+
+    def run(self):
+    	with websockets.sync.server.serve(self.handler, self.addr, self.port) as server:
+    		server.serve_forever()

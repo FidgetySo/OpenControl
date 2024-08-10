@@ -56,6 +56,5 @@ class DB:
 		craftables = []
 		for item in craftables_query:
 			craftables.append(item[0])
-		print(craftables)
 		return craftables
 
