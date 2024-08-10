@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
+import asyncio
 
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
@@ -116,12 +117,16 @@ class MainWindow(QMainWindow):
         self.crafting.ui.item.addItems(craftables)
 
     def sumbit_crafting_request(self):
-        item = self.crafting.ui.item.currentText()
-        amount = self.crafting.ui.amount.value()
-        push = self.crafting.ui.push.isChecked()
-
-        self.relay.new_crafting_request(item, amount, push)
-
+        asyncio.run(
+            self.relay.send(dict(
+                method='new_crafting',
+                item=self.crafting.ui.item.currentText(),
+                amount=self.crafting.ui.amount.value(),
+                push=self.crafting.ui.push.isChecked()
+                )
+            )
+        )
+    
     def setup_storage_widget(self):
         self.storage_widget = QWidget()
         self.storage = Ui_Storage()

@@ -1,13 +1,13 @@
-"""
-import socket
-import selectors
-import traceback
-"""
-
-from websockets.sync.server import serve
+#FidgetySo
+import asyncio
+from websockets.server import serve
 
 import enums
-#from relay.lib_server import Message
+
+import logging
+logger = logging.getLogger('websockets')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler())
 
 class RelayServer:
 	def __init__(self, config, database):
@@ -19,16 +19,19 @@ class RelayServer:
 
 		self.timeout = self.config['Connection']['TimeoutLength']
 
-		self.run()
+		asyncio.run(self.run())
 
-	def handler(websocket):
+	def create_response(self, recieved):
+		return "A Response"
+
+	async def handler(self, websocket):
 		recieved = await websocket.recv()
-		print(recieved)
+		print(type(recieved))
 
-		response = self.create_reponse(recieved)
+		response = self.create_response(recieved)
 
 		await websocket.send(response)
-
-    def run(self):
-    	with websockets.sync.server.serve(self.handler, self.addr, self.port) as server:
-    		server.serve_forever()
+	
+	async def run(self):
+		async with serve(self.handler, self.host, self.port) as server:
+			await asyncio.Future()
