@@ -3,7 +3,6 @@ import sys
 from PySide6.QtWidgets import QApplication
 from gui.mainwindow import MainWindow
 
-import enums
 
 from db.db import DB
 from config import Config

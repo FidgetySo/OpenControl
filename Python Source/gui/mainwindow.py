@@ -1,5 +1,4 @@
 # This Python file uses the following encoding: utf-8
-import sys
 import asyncio
 
 from PySide6 import QtCore
@@ -34,18 +33,43 @@ class MainWindow(QMainWindow):
         self.logic = logic
         self.relay = relay
 
+        self.max_power_len = self.config['GUI']['MaxPowerLen']
+        self.power_update_frequency = self.config['Power']['UpdateFrequency']
+
+        self.offline = self.config['Debug']['OfflineMode']
+        if self.offline:
+            print('Running in Offline Debug Mode')
+
         self.ui = Ui_OpenControl()
         self.ui.setupUi(self)
+        self.resize(self.config['GUI']['StartWidth'], self.config['GUI']['StartHeight'])
 
+        self.start_power_update()
         self.input_power_graph()
         self.total_power_graph()
 
         self.ui.craftingRequest.clicked.connect(self.setup_crafting_dialog)
         self.ui.storage.clicked.connect(self.setup_storage_widget)
 
+    def start_power_update(self):
+        self.power_timer = QtCore.QTimer()
+        self.power_timer.setInterval(self.power_update_frequency / 2)
+        self.power_timer.timeout.connect(self.power_update)
+        self.power_timer.start()
+
+    def power_update(self):
+        if self.offline:
+            self.total_pwoer = randint(0, 100)
+            self.input_power = randint(0, 100)
+        else:
+            self.total_power, self.input_power = self.db.get_power()
     def input_power_graph(self):
-        self.input_x = list(range(100))
-        self.input_y = [randint(0, 100) for _ in range(100)]
+        # Set Maximium Data Points for Graph
+        self.input_x = list(range(self.max_power_len))
+        if self.offline:
+            self.input_y = [randint(0, 100) for _ in range(self.max_power_len)]
+        else:
+            self.input_y = [0 for _ in range(self.max_power_len)]
 
         self.ui.inputGraph.setBackground('w')
 
@@ -59,8 +83,7 @@ class MainWindow(QMainWindow):
         )
 
         self.input_timer = QtCore.QTimer()
-        self.InputUpdateFrequnecy = self.config['Power']['InputUpdateFrequnecy']
-        self.input_timer.setInterval(self.InputUpdateFrequnecy)
+        self.input_timer.setInterval(self.power_update_frequency)
         self.input_timer.timeout.connect(self.update_input_power_graph)
         self.input_timer.start()
 
@@ -69,13 +92,17 @@ class MainWindow(QMainWindow):
         self.input_x.append(self.input_x[-1] + 1)
 
         del self.input_y[:1]
-        self.input_y.append(randint(0, 100))
+        self.input_y.append(self.input_power)
 
         self.input_line.setData(self.input_x, self.input_y)
 
     def total_power_graph(self):
-        self.total_x = list(range(100))
-        self.total_y = [randint(0, 100) for _ in range(100)]
+        # Set Maximium Data Points for Graph
+        self.total_x = list(range(self.max_power_len))
+        if self.offline:
+            self.total_y = [randint(0, 100) for _ in range(self.max_power_len)]
+        else:
+            self.total_y = [0 for _ in range(self.max_power_len)]
 
         self.ui.totalGraph.setBackground('w')
 
@@ -89,8 +116,7 @@ class MainWindow(QMainWindow):
         )
 
         self.total_timer = QtCore.QTimer()
-        self.TotalUpdateFrequnecy = self.config['Power']['TotalUpdateFrequency']
-        self.total_timer.setInterval(self.TotalUpdateFrequnecy)
+        self.total_timer.setInterval(self.power_update_frequency)
         self.total_timer.timeout.connect(self.update_total_power_graph)
         self.total_timer.start()
 
@@ -99,7 +125,7 @@ class MainWindow(QMainWindow):
         self.total_x.append(self.total_x[-1] + 1)
 
         del self.total_y[:1]
-        self.total_y.append(randint(0, 100))
+        self.total_y.append(self.total_power)
 
         self.total_line.setData(self.total_x, self.total_y)
 
@@ -133,7 +159,7 @@ class MainWindow(QMainWindow):
         self.storage.setupUi(self.storage_widget)
         self.storage_widget.show()
 
-        #Disable Editing of Table from GUI
+        #Disable Editing of Tables from GUI
         self.storage.storageTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.storage.queueTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
@@ -157,6 +183,7 @@ class MainWindow(QMainWindow):
         self.crafting_timer.start()
 
     def update_storage_widget(self):
+        # Updates Storage Table
         storage_query = self.db.get_table_data(enums.TABLES.STORAGE)
 
         storageIndex = 0
@@ -185,6 +212,7 @@ class MainWindow(QMainWindow):
         print('Updated Storage Table')
 
     def update_crafting_widget(self):
+        # Updates Crafting Queue Table
         crafting_query = self.db.get_table_data(enums.TABLES.CRAFTING)
 
         craftingIndex = 0

@@ -1,0 +1,8 @@
+{
+    "files": [
+        "mainwindow.py",
+        "form.ui",
+        "forms/crafting_request.ui",
+        "widgets/storage.ui"
+    ]
+}

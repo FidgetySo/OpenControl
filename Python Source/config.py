@@ -1,6 +1,3 @@
-from pathlib import Path
-from collections import defaultdict
-
 import ruamel.yaml
 
 class Config:

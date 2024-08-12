@@ -1,5 +1,3 @@
-import enums
-
 from db.db import DB
 from config import Config
 

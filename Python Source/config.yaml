@@ -1,4 +1,5 @@
 Login:
+  UsesLogin: false
   Username: ""
   Password: ""
 Connection:
@@ -9,14 +10,18 @@ Connection:
   ConnectionCheckInterval: 120
   TimeoutLength: 2
 Database:
+  Local: True
   DB: "db.db"
-  Requests: "requests"
   Storage: "storage"
   Crafting: "crafting"
   Craftables: "craftables"
   Power: "power"
+  Requests: "requests"
+  Host: "localhost"
+  Username: ""
+  Password: ""
 GUI:
-  AutoStart: true
+  MaxPowerLen: 500
   StartWidth: 800
   StartHeight: 600
 Crafting: 
@@ -28,8 +33,7 @@ Crafting:
 Storage:
   UpdateIntervalInMinutes: 15
 Power:
-  InputUpdateFrequnecy: 1000
-  TotalUpdateFrequency: 1000
+  UpdateFrequency: 2500
   EmergencyLevel: 1_000_000
   ConvertFuelsToEU: true
 Emergency:

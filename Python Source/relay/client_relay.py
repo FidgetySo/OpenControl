@@ -1,10 +1,8 @@
 # FidgetySo
 import asyncio
 import websockets
-import socket
 
 import enums
-
 
 
 class ClientRelay:
@@ -14,13 +12,13 @@ class ClientRelay:
 
 		self.host = self.config['Connection']['Host']
 		self.port = self.config['Connection']['RelayPort']
-		self.host = host = f"ws://{self.host}:{self.port}"
+		self.host_str = f"ws://{self.host}:{self.port}"
 
 		self.timeout = self.config['Connection']['TimeoutLength']
 			
 
 	async def send(self, data: dict):
-		async with websockets.connect(self.host, ping_timeout=self.timeout) as websocket:
+		async with websockets.connect(self.host_str, ping_timeout=self.timeout) as websocket:
 			await websocket.send(str(data))
 			response = await websocket.recv()
 			print(response)
