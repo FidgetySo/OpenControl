@@ -10,16 +10,18 @@ Connection:
   ConnectionCheckInterval: 120
   TimeoutLength: 2
 Database:
-  Local: True
+  Local: true
   DB: "db.db"
+  RemoteDB: "opencontrol"
+  Host: "localhost"
+  Port: 3306
+  Username: ""
+  Password: ""
   Storage: "storage"
   Crafting: "crafting"
   Craftables: "craftables"
   Power: "power"
   Requests: "requests"
-  Host: "localhost"
-  Username: ""
-  Password: ""
 GUI:
   MaxPowerLen: 500
   StartWidth: 800
@@ -39,7 +41,7 @@ Power:
 Emergency:
   EmergencyAlerts: true
   DiscordContacts:
-    - ". discord username"
+    - ".discord username"
   DiscordToken: ""
   DiscordUseEmbeddedMessages: true
 Robots:

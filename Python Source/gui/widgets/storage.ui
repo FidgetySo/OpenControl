@@ -57,14 +57,6 @@
         </column>
         <column>
          <property name="text">
-          <string>Bytes</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
           <string>Processors</string>
          </property>
          <property name="textAlignment">

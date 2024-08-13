@@ -41,4 +41,4 @@ luac.out
 
 *.pyc
 /Python Source/testing
-*.db
+

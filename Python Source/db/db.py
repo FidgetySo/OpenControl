@@ -11,6 +11,7 @@ class DB:
 		# Is it a local sqlite3 database?
 		self.is_local = self.config['Local']
 
+		self.new_database = False
 		self.connect()
 
 	def connect(self):
@@ -28,6 +29,9 @@ class DB:
 
 			self.db_connection = sqlite3.connect(self.database_file)
 			self.cursor = self.db_connection.cursor()
+
+			# Check if tables exist
+			existing_tables = self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 		else:
 			# Connect to remote database
 			import mysql.connector
@@ -35,19 +39,27 @@ class DB:
 			print("Connecting to Remote Database")
 			self.db_connection = mysql.connector.connect(
 				host=self.config['Host'],
+				port=self.config['Port'],
+				database=self.config['RemoteDB'],
 				user=self.config['Username'],
 				password=self.config['Password']
 				)
-			self.cursor = mydb.cursor()
-		#Check if tables exist
-		existing_tables = self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-		tables_list = [item[0] for item in existing_tables]
-		if len(tables_list) <= 4:
-			drop_tables = True
-		else:
-			drop_tables = False
+			self.cursor = self.db_connection.cursor()
+
+			#Check if tables exist
+			self.cursor.execute("SHOW TABLES;")
+			existing_tables = self.cursor.fetchall()
+		try:
+			tables_list = [item[0] for item in existing_tables]
+			if len(tables_list) < 5:
+				self.new_database = True
+			else:
+				pass
+		except Exception as e:
+			print(e)
+			self.new_database = True
 		if self.new_database:
-			self.create_tables(drop_tables=drop_tables)
+			self.create_tables()
 			print('Loaded Database and Created Tables ')
 		else:
 			print('Loaded Database')
@@ -55,41 +67,40 @@ class DB:
 			
 
 
-	def create_tables(self, drop_tables=False):
-		if drop_tables:
-			self.cursor.execute("DROP TABLE IF EXISTS '"+self.config['Storage']+"'")
-			self.cursor.execute("DROP TABLE IF EXISTS '"+self.config['Crafting']+"'")
-			self.cursor.execute("DROP TABLE IF EXISTS '"+self.config['Craftables']+"'")
-			self.cursor.execute("DROP TABLE IF EXISTS '"+self.config['Power']+"'")
-			self.cursor.execute("DROP TABLE IF EXISTS '"+self.config['Requests']+"'")
+	def create_tables(self):
+		self.cursor.execute("DROP TABLE IF EXISTS "+self.config['Storage']+"")
+		self.cursor.execute("DROP TABLE IF EXISTS "+self.config['Crafting']+"")
+		self.cursor.execute("DROP TABLE IF EXISTS "+self.config['Craftables']+"")
+		self.cursor.execute("DROP TABLE IF EXISTS "+self.config['Power']+"")
+		self.cursor.execute("DROP TABLE IF EXISTS "+self.config['Requests']+"")
 		# Create Tables
 		storage_str = f"""CREATE TABLE {self.config['Storage']} (
-			"item"    TEXT,
-			"amount"    INTEGER,
-			"data"    TEXT
+			item    	TEXT,
+			amount    	INTEGER,
+			data    	TEXT
 			);"""
 		crafting_str = f"""CREATE TABLE {self.config['Crafting']} (
-			"item"	TEXT,
-			"amount"	INTEGER,
-			"remaining"	INTEGER,
-			"n_bytes"	INTEGER,
-			"n_procs"	INTEGER,
-			"datatime"	TEXT, 
-			"c_id"	INTEGER
+			item		TEXT,
+			amount		INTEGER,
+			remaining	INTEGER,
+			n_procs		INTEGER,
+			datatime	TEXT, 
+			c_id		INTEGER
 			);"""
 		craftables_str = f"""CREATE TABLE {self.config['Craftables']} (
-			"item"	TEXT
+			item		TEXT
 			);"""
 		power_str = f"""CREATE TABLE {self.config['Power']} (
-			"total_eu"	INTEGER,
-			"input_eu"	INTEGER
+			id 			INTEGER,
+			total_eu	INTEGER,
+			input_eu	INTEGER
 			);"""
 		requests_str = f"""CREATE TABLE {self.config['Requests']} (
-			"item"  TEXT,
-			"amount"    INTEGER,
-			"status"    INTEGER,
-			"datetime"  INTEGER,
-			"c_id"  INTEGER
+			item  		TEXT,
+			amount    	INTEGER,
+			status    	INTEGER,
+			datetime  	INTEGER,
+			c_id  		INTEGER
 		);"""
 
 		self.cursor.execute(storage_str)
@@ -118,19 +129,17 @@ class DB:
 			return
 
 		table_query_str = 'SELECT * from {0}'.format(table)
-		table_query = self.cursor.execute(table_query_str)
-		
+		self.cursor.execute(table_query_str)
+		table_query = self.cursor.fetchall()
 		return table_query
 
 	def add_crafting_request(
 		self,
 		item,
 		amount,
-		n_bytes,
 		n_procs
 	):
 		amount = str(amount)
-		n_bytes = str(n_bytes)
 		n_procs = str(n_procs)
 		now = datetime.now()
 		date_time = now.strftime("%m/%d/%Y.%H:%M:%S")
@@ -142,7 +151,7 @@ class DB:
 				list(self.get_table_data(TABLES.REQUESTS))
 			) + 1
 		)
-		add_str = "INSERT INTO '"+self.config['Crafting']+"' VALUES('"+item+"', '"+amount+"', '"+amount+"', '"+n_bytes+"', '"+n_procs+"', '"+date_time+"', '"+c_id+"')"
+		add_str = "INSERT INTO "+self.config['Crafting']+" VALUES('"+item+"', "+amount+", "+amount+", "+n_procs+", '"+date_time+"', '"+c_id+"');"
 
 		self.cursor.execute(add_str)
 		self.db_connection.commit()
@@ -162,7 +171,7 @@ class DB:
 						amount = i[1]
 			except:
 				print("Invalid Crafting ID")
-		update_str = "UPDATE '"+self.config['crafting']+"' SET remaining = '"+remaining+"' WHERE c_id = '"+c_id+"'"
+		update_str = "UPDATE "+self.config['crafting']+" SET remaining = '"+remaining+"' WHERE c_id = '"+c_id+"';"
 		print(update_str)
 		self.cursor.execute(update_str)
 		self.db_connection.commit()
@@ -177,22 +186,23 @@ class DB:
 	
 	def update_craftables(self, items: list):
 		# Delete All Craftables (easier to program might switch to something more effiecent later)
-		self.cursor.execute(f"SELECT * FROM {self.config['Craftables']}")
-		self.cursor.execute(f"DELETE FROM {self.config['Craftables']}")
+		self.cursor.execute(f"SELECT * FROM {self.config['Craftables']};")
+		self.cursor.execute(f"DELETE FROM {self.config['Craftables']};")
 
 		for item in items:
-			add_item_str = "INSERT INTO '"+self.config['Craftables']+"' VALUES('"+item+"')"
+			add_item_str = "INSERT INTO "+self.config['Craftables']+" VALUES('"+item+"');"
 			self.cursor.execute(add_item_str)
 		self.db_connection.commit()
 
 
 	def get_power(self):
-		power_row = self.cursor.execute("SELECT * from '"+self.config['Power']+"' ORDER BY rowid DESC LIMIT 1")
+		self.cursor.execute("SELECT * from "+self.config['Power']+" ORDER BY id DESC LIMIT 1")
+		power_row = self.cursor.fetchone()
 		#power_time = power_row[0]
 		try:
 			for i in power_row:
-				total_power = i[0]
-				input_power = i[1]
+				total_power = i[1]
+				input_power = i[2]
 			return total_power, input_power
 		except:
 			return 0, 0

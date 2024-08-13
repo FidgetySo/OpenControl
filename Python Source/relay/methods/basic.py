@@ -9,3 +9,5 @@ class BasicMethod:
     def __init__(self, config, database):
         self.config = config.yaml_data
         self.db = database
+
+        self.offline = self.config['Debug']['OfflineMode']

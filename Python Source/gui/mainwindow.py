@@ -33,15 +33,16 @@ class MainWindow(QMainWindow):
         self.logic = logic
         self.relay = relay
 
-        self.max_power_len = self.config['GUI']['MaxPowerLen']
-        self.power_update_frequency = self.config['Power']['UpdateFrequency']
-
         self.offline = self.config['Debug']['OfflineMode']
         if self.offline:
             print('Running in Offline Debug Mode')
 
         self.ui = Ui_OpenControl()
         self.ui.setupUi(self)
+
+        self.max_power_len = self.config['GUI']['MaxPowerLen']
+        self.power_update_frequency = self.config['Power']['UpdateFrequency']
+
         self.resize(self.config['GUI']['StartWidth'], self.config['GUI']['StartHeight'])
 
         self.start_power_update()
@@ -237,23 +238,17 @@ class MainWindow(QMainWindow):
                 2,
                 QTableWidgetItem(str(i[2]))
             )
-            # Number of Bytes
+            # Number of Processors
             self.storage.queueTable.setItem(
                 craftingIndex,
                 3,
                 QTableWidgetItem(str(i[3]))
             )
-            # Number of Processors
-            self.storage.queueTable.setItem(
-                craftingIndex,
-                4,
-                QTableWidgetItem(str(i[4]))
-            )
             # Date time
             self.storage.queueTable.setItem(
                 craftingIndex,
-                5,
-                QTableWidgetItem(i[5])
+                4,
+                QTableWidgetItem(i[4])
             )
             craftingIndex += 1
         print('Updated Crafting Queue')
